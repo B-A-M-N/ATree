@@ -1,5 +1,7 @@
 # atree
 
+[![CodSpeed](https://img.shields.io/endpoint?url=https://codspeed.io/badge.json)](https://app.codspeed.io/B-A-M-N/ATree?utm_source=badge)
+
 > Production-grade parallel filesystem analysis and A\* pathfinding, written in Rust.
 
 | | |
@@ -261,6 +263,18 @@ cargo doc --open           # generate and view rustdoc for the library
 ```
 
 The release profile uses `lto = "fat"`, `codegen-units = 1`, `panic = "abort"`, and `strip = true` for maximum runtime performance at the cost of slightly slower builds.
+
+### Benchmarks
+
+Benchmarks live in [`benches/atree_bench.rs`](benches/atree_bench.rs) and use [divan](https://github.com/nvzqz/divan) through the CodSpeed compatibility layer. They cover the filesystem scan (`build_graph`, full / `--tree` / dirs-only), the graph algorithms (`compute_depths`, `astar`, `bfs_expanded`), the rendering paths (terminal tree, Graphviz DOT), the JSON report pipeline, and the per-entry helpers (`sanitize_name`, `human_size`).
+
+```bash
+cargo bench                                          # run locally with divan
+cargo codspeed build -m simulation                   # build the instrumented target
+codspeed run -m simulation -- cargo codspeed run     # measure with CodSpeed
+```
+
+Every push and pull request runs the same suite in CI ([`.github/workflows/codspeed.yml`](.github/workflows/codspeed.yml)); results and per-PR regression reports are published on [CodSpeed](https://app.codspeed.io/B-A-M-N/ATree).
 
 ### Multi-platform release artifacts
 
